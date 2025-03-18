@@ -3,14 +3,15 @@ version: '3.9'
 services:
     postgres:
         image: postgres:latest
-        container_name: db
+        container_name: ${PROJECT_NAME}-pgsql
         environment:
-            POSTGRES_USER: user
-            POSTGRES_PASSWORD: user111
-            POSTGRES_DB: pgsql-demo-db
+            PGPASSWORD: '${DB_PASSWORD}'
+            POSTGRES_DB: '${DB_DATABASE}'
+            POSTGRES_USER: '${DB_USERNAME}'
+            POSTGRES_PASSWORD: '${DB_PASSWORD}'
             PGDATA: /var/lib/postgresql/data/pgdata
         ports:
-            - "5432:5432"
+            - "${DB_PORT}:5432"
         volumes:
             - ./pgdata:/var/lib/postgresql/data/pgdata
         deploy:
@@ -30,7 +31,7 @@ services:
                      -c wal_buffers=16MB
                      -c default_statistics_target=100
         healthcheck:
-            test: [ "CMD-SHELL", "pg_isready -U user -d pgsql-demo-db" ]
+            test: [ "CMD-SHELL", "pg_isready -U user -d ${DB_DATABASE}" ]
             interval: 30s
             timeout: 10s
             retries: 5
